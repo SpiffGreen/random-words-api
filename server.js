@@ -4,6 +4,7 @@ const fs = require("fs");
 const PORT = process.env.PORT || 5000;
 
 const data = JSON.parse(fs.readFileSync(path.join(__dirname, "words.json"), { encoding: "utf-8" }));
+data.data = data.data.sort((a, b) => 0.5 - Math.random());
 
 function handleDataRequest(req, res) {
     let num = null;
@@ -16,6 +17,8 @@ function handleDataRequest(req, res) {
 }
 
 serveJS
-    .get("/", (req, res) => res.send(res, "Welcome to Random Words API.<br> Visit <i>'/data'</i> for random data, use <i>'/data?number=10'</i> for 10 words"))
+    .use(serveJS.cors())
+    .get("/", (req, res) => res.send(res, "Welcome to Random Words API.<br> Visit <a >'/data'</a> for random data, use <i>'/data?number=10'</i> for 10 words"))
     .get("/data", handleDataRequest)
+    .get("/all", (req, res) => res.send(res, data))
     .listen(PORT, () => console.log(`Server Started on port ${PORT}`));
